@@ -32,17 +32,23 @@ body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:90;op
 #pre i{width:140px;height:1px;background:var(--line);position:relative;overflow:hidden}
 #pre i::after{content:"";position:absolute;inset:0;background:var(--gold);transform:translateX(-100%);animation:ld 1s var(--ez) forwards}
 @keyframes ld{to{transform:none}}
-.chip{height:46px;min-width:46px;border-radius:12px;background:#fff;display:inline-grid;place-items:center;overflow:hidden;flex:none;box-shadow:0 0 0 1px var(--gold),0 10px 30px rgba(255,85,0,.25)}
-.chip img{height:100%;width:auto;max-width:140px;display:block}
-.chip span{font-family:var(--brandf);font-weight:800;color:#141416;font-size:18px;padding:0 8px}
-#pre .chip{height:76px;min-width:76px}
+.chip{--s:46px;position:relative;height:var(--s);aspect-ratio:var(--ar,1);border-radius:calc(var(--s)*.28);background:var(--lb,#fff);display:inline-grid;place-items:center;overflow:hidden;flex:none;box-shadow:0 0 0 1px rgba(255,255,255,.16),0 8px 26px rgba(0,0,0,.45);transition:transform .6s var(--ez),box-shadow .6s}
+.chip img{width:100%;height:100%;object-fit:contain;display:block}
+.chip span{font-family:var(--brandf);font-weight:800;color:#141416;font-size:calc(var(--s)*.4)}
+.chip::after{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 35%,rgba(255,255,255,.4) 50%,transparent 65%);transform:translateX(-130%);transition:transform .9s var(--ez);pointer-events:none}
+.brand:hover .chip{transform:rotate(-5deg) scale(1.07);box-shadow:0 0 0 1px var(--gold),0 10px 30px rgba(255,85,0,.45)}
+.brand:hover .chip::after{transform:translateX(130%)}
+#pre .chip{--s:96px;animation:pg 2.2s ease-in-out infinite}
+#pre div{gap:24px}
+@keyframes pg{50%{box-shadow:0 0 0 1px var(--gold),0 0 56px rgba(255,85,0,.55)}}
 /* header */
 .hd{position:fixed;top:0;left:0;right:0;z-index:50;padding-top:env(safe-area-inset-top,0);transition:background .4s,backdrop-filter .4s,border-color .4s;border-bottom:1px solid transparent}
 .hd.sc{background:rgba(20,20,22,.78);backdrop-filter:blur(18px) saturate(1.4);-webkit-backdrop-filter:blur(18px) saturate(1.4);border-color:var(--line)}
 .hd .wrap{display:flex;align-items:center;justify-content:space-between;height:72px}
 .brand{display:flex;align-items:center;gap:12px;font-family:var(--brandf);font-size:20px;letter-spacing:.04em;font-weight:800;text-transform:uppercase;line-height:1}
 .bt i,#pre b i,.rh h3 i{font-style:normal;color:var(--gold)}
-.brand .chip{height:40px;min-width:40px}
+.brand .chip{--s:44px}
+footer .brand .chip{--s:48px}
 .nav{display:none;gap:34px;font-size:12px;letter-spacing:.18em;text-transform:uppercase;font-weight:500}
 .nav a{position:relative;padding:8px 0;color:var(--mut);transition:color .3s}
 .nav a::after{content:"";position:absolute;left:0;bottom:2px;height:1px;width:100%;background:var(--gold);transform:scaleX(0);transform-origin:right;transition:transform .5s var(--ez)}
@@ -181,7 +187,7 @@ footer small{width:100%;text-align:center;font-size:12px;padding-top:22px;margin
 #dr::after{content:"";position:absolute;left:0;right:0;top:100%;height:12px;background:conic-gradient(from -45deg at bottom,#0000,var(--paper) 1deg 90deg,#0000 91deg) 50%/24px 100%}
 #dr::before{content:"";position:absolute;left:0;right:0;bottom:100%;height:12px;background:conic-gradient(from 135deg at top,#0000,var(--paper) 1deg 90deg,#0000 91deg) 50%/24px 100%}
 .rh{padding:30px 26px 18px;text-align:center;position:relative}
-.rh .chip{margin-bottom:12px;height:54px;min-width:54px;box-shadow:0 0 0 1px #141416}
+.rh .chip{--s:64px;margin-bottom:14px;box-shadow:0 0 0 1px rgba(20,20,22,.14),0 10px 24px rgba(0,0,0,.2)}
 .rh h3{font-family:var(--brandf);font-size:26px;letter-spacing:.08em;font-weight:800;padding-left:.08em}
 .rh p{font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:#6b6b75}
 .x{position:absolute;z-index:5;top:18px;right:14px;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;transition:.4s var(--ez)}
@@ -222,7 +228,7 @@ footer small{width:100%;text-align:center;font-size:12px;padding-top:22px;margin
 #toast.on{transform:translate(-50%,0)}
 @media(max-width:600px){
 .wrap{width:calc(100% - 32px)}html{scroll-padding-top:72px}
-.hd .wrap{height:64px}.brand{font-size:16px;gap:10px}.brand .chip{height:38px;min-width:38px}
+.hd .wrap{height:64px}.brand{font-size:16px;gap:10px}.brand .chip{--s:40px}
 .hbtn{padding:0 16px;font-size:10px}
 .hero{padding:92px 0 52px;min-height:auto}.hero::before{width:420px;height:420px;right:-160px}
 .eyebrow{margin-bottom:16px;font-size:10px;letter-spacing:.26em}
@@ -380,8 +386,14 @@ let cart=[],sel={},cat='Todo',ticket='UR-'+(1000+Math.floor(Math.random()*8999))
 try{cart=JSON.parse(localStorage.getItem('us_cart')||'[]')}catch(e){}
 const save=()=>{try{localStorage.setItem('us_cart',JSON.stringify(cart))}catch(e){}};
 let tt;const toast=m=>{const t=$('#toast');t.textContent=m;t.classList.add('on');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('on'),2800)};
-/* logo con respaldo */
-$$('.logo-slot').forEach(s=>{const i=new Image();i.alt='Logo UrbanStep';i.src=CONFIG.logo;i.onerror=()=>{s.innerHTML='<span>https://i.imgur.com/Zn25kuR.jpeg</span>'};s.appendChild(i)});
+/* logo: se adapta a su proporción y color de fondo */
+$$('.logo-slot').forEach(sl=>{const i=new Image();i.alt='Logo '+CONFIG.marca;i.decoding='async';i.referrerPolicy='no-referrer';i.onerror=()=>{sl.innerHTML='<span>US</span>'};i.src=CONFIG.logo;sl.appendChild(i)});
+(()=>{const pr=new Image(),rs=document.documentElement.style;pr.referrerPolicy='no-referrer';
+ pr.onload=()=>{rs.setProperty('--ar',Math.min(2.6,Math.max(.6,pr.naturalWidth/pr.naturalHeight)).toFixed(3));
+  const t=new Image();t.crossOrigin='anonymous';t.referrerPolicy='no-referrer';
+  t.onload=()=>{try{const c=document.createElement('canvas');c.width=c.height=24;const x=c.getContext('2d');x.drawImage(t,0,0,24,24);let R=0,G=0,B=0;[[1,1],[22,1],[1,22],[22,22]].forEach(([a,b])=>{const d=x.getImageData(a,b,1,1).data;R+=d[0];G+=d[1];B+=d[2]});rs.setProperty('--lb',`rgb(${R>>2},${G>>2},${B>>2})`)}catch(e){}};
+  t.src=CONFIG.logo};
+ pr.src=CONFIG.logo})();
 $$('[data-soc]').forEach(a=>a.href=CONFIG[a.dataset.soc]);
 /* ============ CATÁLOGO ============ */
 const fl=$('#fl'),ind=$('#ind');
